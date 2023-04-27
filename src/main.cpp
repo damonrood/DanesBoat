@@ -5,6 +5,10 @@
 /*   pasward is    gramgram
 /*
 /*   website is    goldieiii.local
+/* 
+/*   sub is yellow 21, back is grn/wht, tower is pink/blue, front is red/orange
+/*
+/*  sub(yellow) tower(blue/pink) front(red/orange) rear(green/whiten)
 /*
 /*************************************************************/
 // Load Wi-Fi library
@@ -28,13 +32,14 @@ WiFiServer server(80);
 // Variable to store the HTTP request
 String header;
 int count = 0;
+int count2 = 0;
 bool ledState = false;
 
 // Auxiliar variables to store the current output state
-String frontSpkrState = "on";
-String towerSpkrState = "on";
-String backSpkrState = "on";
-String bassSpkrState = "on";
+String frontSpkrState = "off";
+String towerSpkrState = "off";
+String backSpkrState = "off";
+String bassSpkrState = "off";
 
 // Assign output variables to GPIO pins
 /*const int outputFront = 13;
@@ -49,10 +54,10 @@ const int frontR = 17;
 const int towerL = 16;
 const int towerR = 15;
 
-const int backR = 21;
+const int backR = 22;
 const int backL = 23;
 
-const int sub = 22;
+const int sub = 21;
 
 
 void setup() {
@@ -78,7 +83,7 @@ void setup() {
   digitalWrite(frontR, HIGH);
   digitalWrite(towerL, HIGH);
   digitalWrite(towerL, HIGH);
-  digitalWrite(backL, HIGH);
+  digitalWrite(backL, HIGH); 
   digitalWrite(backR, HIGH);
   digitalWrite(sub, HIGH);
 
@@ -112,31 +117,24 @@ void loop(){
   WiFiClient client = server.available();   // Listen for incoming clients
 
   count++;
-  if(count == 10000){
-    if(ledState == false){
-      digitalWrite(flashingLed, HIGH);
-      ledState = true;
-    }else{
-      digitalWrite(flashingLed, LOW);
-      ledState = false;
-    }
-    count = 0;
-  }
+
 
   if (client) {                             // If a new client connects,
     Serial.println("New Client.");          // print a message out in the serial port
     String currentLine = "";                // make a String to hold incoming data from the client
     while (client.connected()) { 
-   if(count == 100000){
-    if(ledState == false){
-      digitalWrite(flashingLed, HIGH);
-      ledState = true;
-    }else{
-      digitalWrite(flashingLed, LOW);
-      ledState = false;
-    }
-    count = 0;
-  }      
+      count2++;
+      if(count2 == 10000){
+        count2 = 0;
+        if(ledState == false){
+          digitalWrite(flashingLed, HIGH);
+          ledState = true;
+        }else{
+          digitalWrite(flashingLed, LOW);
+          ledState = false;
+        }
+      }
+    
   
                 // loop while the client's connected
       if (client.available()) {             // if there's bytes to read from the client,
@@ -161,14 +159,14 @@ void loop(){
               digitalWrite(frontL, HIGH);
               digitalWrite(frontR, HIGH);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("LOW");
+              Serial.println("High");
             } else if (header.indexOf("GET /front/on") >= 0) {
               Serial.println("Front on");
               frontSpkrState = "on";
               digitalWrite(frontL, LOW);
               digitalWrite(frontR, LOW);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("HIGH");
+              Serial.println("LOW");
             } else if (header.indexOf("GET /tower/on") >= 0) {
               Serial.println("Tower on");
               towerSpkrState = "on";
@@ -176,39 +174,39 @@ void loop(){
 
               digitalWrite(towerR, LOW); 
                            Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("HIGH");
+              Serial.println("LOW");
              } else if (header.indexOf("GET /tower/off") >= 0) {
               Serial.println("Tower off");
               towerSpkrState = "off";
               digitalWrite(towerL, HIGH);
               digitalWrite(towerR, HIGH);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("LOW");
+              Serial.println("HIGH");
              }else if (header.indexOf("GET /back/on") >= 0) {
               Serial.println("Back on");
               backSpkrState = "on";
               digitalWrite(backL, LOW);
               digitalWrite(backR, LOW);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("HIGH");
+              Serial.println("LOW");
              } else if (header.indexOf("GET /back/off") >= 0) {
               Serial.println("Back off");
               backSpkrState = "off";
               digitalWrite(backL, HIGH);
               digitalWrite(backR, HIGH);              Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("LOW");
+              Serial.println("HIGH");
              }else if (header.indexOf("GET /bass/on") >= 0) {
               Serial.println("Bass on");
               bassSpkrState = "on";
               digitalWrite(sub, LOW);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("HIGH");
+              Serial.println("LOW");
              } else if (header.indexOf("GET /bass/off") >= 0) {
               Serial.println("Bass off");
               bassSpkrState = "off";
               digitalWrite(sub, HIGH);
                Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
-              Serial.println("LOW");
+              Serial.println("HIGH");
             }
             
             // Display the HTML web page
@@ -281,5 +279,16 @@ void loop(){
     client.stop();
     Serial.println("Client disconnected.");
     Serial.println("");
+  }else{
+      if(count == 100000){
+        if(ledState == false){
+          digitalWrite(flashingLed, HIGH);
+          ledState = true;
+        }else{
+          digitalWrite(flashingLed, LOW);
+          ledState = false;
+        }
+      count = 0;
+      }
   }
 }
