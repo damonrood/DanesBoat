@@ -79,10 +79,10 @@ void setup() {
 
 
   // Set outputs to LOW
-  digitalWrite(frontL, HIGH);
+digitalWrite(frontL, HIGH);
   digitalWrite(frontR, HIGH);
-  digitalWrite(towerL, HIGH);
-  digitalWrite(towerL, HIGH);
+  digitalWrite(towerL, LOW);
+  digitalWrite(towerR, LOW);
   digitalWrite(backL, HIGH); 
   digitalWrite(backR, HIGH);
   digitalWrite(sub, HIGH);
@@ -170,16 +170,16 @@ void loop(){
             } else if (header.indexOf("GET /tower/on") >= 0) {
               Serial.println("Tower on");
               towerSpkrState = "on";
-              digitalWrite(towerL, LOW);
+              digitalWrite(towerL, HIGH);  //USING A REAL RELAY FOR TOWER
 
-              digitalWrite(towerR, LOW); 
+              digitalWrite(towerR, HIGH); 
                            Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
               Serial.println("LOW");
              } else if (header.indexOf("GET /tower/off") >= 0) {
               Serial.println("Tower off");
               towerSpkrState = "off";
-              digitalWrite(towerL, HIGH);
-              digitalWrite(towerR, HIGH);
+              digitalWrite(towerL, LOW);
+              digitalWrite(towerR, LOW);
               Serial.println("the Pin is !!!!!!!!!!!!!!!!!!");
               Serial.println("HIGH");
              }else if (header.indexOf("GET /back/on") >= 0) {
